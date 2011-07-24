@@ -9,10 +9,12 @@
 my $csvfiledir = "csv";
 my $tickerfile = "tickers.txt";
 my $dbname     = "stocks.db";
+my $dbdir       = "sqlitedb";
+use File::Path;
 use DBI;
 use strict;
-my $db = DBI->connect("dbi:SQLite:$dbname", "", "", {RaiseError => 1, AutoCommit => 1});
-
+mkpath($dbdir) unless (-d $dbdir);
+my $db = DBI->connect("dbi:SQLite:$dbdir/$dbname", "", "", {RaiseError => 1, AutoCommit => 1});
 my $create_table = <<"END";
 CREATE TABLE IF NOT EXISTS hist_quotes (
 	ticker TEXT(10), 

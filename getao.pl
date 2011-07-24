@@ -1,9 +1,11 @@
 #!/usr/bin/perl
 use strict;
+my $csvfiledir = "csv";
+my $tickerfile = "tickers.txt";
 use threads;
 use Thread::Queue;
 my @stocklist=(); #qw/^VIX USO GLD EFA IYR TLT DBA DBB LQD FXE FXY SPY/;
-open(DAT, "tickers.txt") || die("Could not open file!");
+open(DAT, $tickerfile) || die("Could not open file!");
 @stocklist=<DAT>;
 close DAT;
 
