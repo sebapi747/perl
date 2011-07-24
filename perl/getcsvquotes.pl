@@ -10,13 +10,19 @@
 use strict;
 use threads;
 use Thread::Queue;
+use File::Path;
+use Time::localtime; 
+
 my $csvfiledir = "csv";
 my $tickerfile = "tickers.txt";
+my $tm = localtime; 
 
 open(DAT, $tickerfile) || die("Could not open file $tickerfile !");
 my @stocklist=<DAT>;
 close DAT;
-
+mkpath($csvfiledir) unless (-d $csvfiledir);
+my $month = ($tm->mon)+1;
+my $datestring = sprintf("d=%2d&e=%2d&f=%4d",$tm->mon, $tm->mday,$tm->year+1900);
 sub worker {
     my $tid = threads->tid;
     my( $Qwork, $Qresults ) = @_;
@@ -27,7 +33,7 @@ sub worker {
 	my $si = -s $outfile;
 	if ($si == 0)
 	{
-		system "wget 'http://ichart.finance.yahoo.com/table.csv?s=$work&a=00&b=29&c=1993&d=06&e=15&f=2011&g=d&ignore=.csv' -O $outfile" ;
+		system "wget 'http://ichart.finance.yahoo.com/table.csv?s=$work&a=00&b=29&c=1993&$datestring&g=d&ignore=.csv' -O $outfile" ;
 		$si = -s $outfile;
 		if ($si == 0)
 		{
