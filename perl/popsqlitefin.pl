@@ -7,13 +7,15 @@
 #
 #
 use strict;
-my $csvfiledir = "finhtml";
-my $tickerfile = "tickers.txt";
-my $dbname     = "financial.db";
-
+my $csvfiledir  = "finhtml";
+my $tickerfile  = "tickers.txt";
+my $dbname   = "financial.db";
+my $dbdir       = "sqlitedb";
+use File::Path;
 use DBI;
-
-my $db = DBI->connect("dbi:SQLite:$dbname", "", "", {RaiseError => 1, AutoCommit => 1});
+mkpath($csvfiledir) unless (-d $csvfiledir);
+mkpath($dbdir) unless (-d $dbdir);
+my $db = DBI->connect("dbi:SQLite:$dbdir/$dbname", "", "", {RaiseError => 1, AutoCommit => 1});
 my $create_table = <<"END";
 CREATE TABLE IF NOT EXISTS financial (
 	ticker TEXT(10), 

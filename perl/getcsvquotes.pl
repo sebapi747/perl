@@ -8,15 +8,14 @@
 # script is using a thread pool to parallel process the retrieval
 #
 use strict;
+my $csvfiledir = "csv";
+my $tickerfile = "tickers.txt";
+
 use threads;
 use Thread::Queue;
 use File::Path;
 use Time::localtime; 
-
-my $csvfiledir = "csv";
-my $tickerfile = "tickers.txt";
 my $tm = localtime; 
-
 open(DAT, $tickerfile) || die("Could not open file $tickerfile !");
 my @stocklist=<DAT>;
 close DAT;
