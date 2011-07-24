@@ -8,9 +8,11 @@
 # script is using a thread pool to parallel process the retrieval
 #
 use strict;
-my $csvfiledir = "csv";
+my $csvfiledir = "../csv";
 my $tickerfile = "tickers.txt";
 
+# --------------------------------------------------------------------------------------------------------------------------
+#
 use threads;
 use Thread::Queue;
 use File::Path;

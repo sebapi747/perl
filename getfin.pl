@@ -1,5 +1,15 @@
 #!/usr/bin/perl
-open(DAT, "exchange.txt") || die("Could not open file!");
+# 
+# Rationale: script for retrieving financial info from advfn
+#
+my $outdir = "../finhtml";
+my $input = "exchange.txt";
+
+# --------------------------------------------------------------------------------------------------------------------------
+#
+use File::Path;
+mkpath($outdir) unless (-d $outdir);
+open(DAT, "$input") || die("Could not open file, run getgoogle.pl and findexchanges.sh!");
 my @stocklist=<DAT>;
 my @years=qw/0 5 10 15/;
 close DAT;
@@ -64,7 +74,7 @@ foreach (reverse sort @stocklist) #reverse sort
 	$ticker =~ s/.*://;
 	for (my $i=0; $i<$#years+1; $i++)
 	{
-		my $f = "finhtml/$ticker-$i.html";
+		my $f = "$outdir/$ticker-$i.html";
 		deletebadfile($f);
 
 		my $r ="\"http://asia.advfn.com/p.php?pid=financials\&btn=s_ok\&mode=annual_reports\&symbol=$fullticker\&s_ok=OK\&start_date=$years[$i]\"";

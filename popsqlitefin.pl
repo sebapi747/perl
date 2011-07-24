@@ -7,13 +7,16 @@
 #
 #
 use strict;
-my $csvfiledir  = "finhtml";
+my $csvfiledir  = "../finhtml";
 my $tickerfile  = "tickers.txt";
 my $dbname   = "financial.db";
-my $dbdir       = "sqlitedb";
+my $dbdir       = "../sqlitedb";
+
+# --------------------------------------------------------------------------------------------------------------------------
+#
 use File::Path;
 use DBI;
-mkpath($csvfiledir) unless (-d $csvfiledir);
+die "run getfin.pl first!" if (!-d $csvfiledir);
 mkpath($dbdir) unless (-d $dbdir);
 my $db = DBI->connect("dbi:SQLite:$dbdir/$dbname", "", "", {RaiseError => 1, AutoCommit => 1});
 my $create_table = <<"END";

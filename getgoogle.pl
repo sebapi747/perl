@@ -1,9 +1,19 @@
 #!/usr/bin/perl
+# 
+# Rationale: script for retrieving google page
+#
 use strict;
+my $outdir = "../googlehtml";
+my $tickerfile = "tickers.txt";
+
+# --------------------------------------------------------------------------------------------------------------------------
+#
 use threads;
 use Thread::Queue;
+use File::Path;
+mkpath($outdir) unless (-d $outdir);
 my @stocklist=(); #qw/^VIX USO GLD EFA IYR TLT DBA DBB LQD FXE FXY SPY/;
-open(DAT, "tickers.txt") || die("Could not open file!");
+open(DAT, $tickerfile) || die("Could not open file!");
 @stocklist=<DAT>;
 close DAT;
 
@@ -13,7 +23,7 @@ sub worker {
     while( my $work = $Qwork->dequeue ) {
         my $result;
 
-	my $fileout = "googlehtml/$work.csv";
+	my $fileout = "$outdir/$work.html";
 	my $si = -s $fileout;
 	if ($si == 0)
 	{

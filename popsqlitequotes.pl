@@ -6,10 +6,13 @@
 # Date: 2010 - 2011
 #
 #
-my $csvfiledir = "csv";
+my $csvfiledir = "../csv";
 my $tickerfile = "tickers.txt";
 my $dbname     = "stocks.db";
-my $dbdir       = "sqlitedb";
+my $dbdir       = "../sqlitedb";
+
+# --------------------------------------------------------------------------------------------------------------------------
+#
 use File::Path;
 use DBI;
 use strict;

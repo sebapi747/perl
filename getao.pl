@@ -1,9 +1,17 @@
 #!/usr/bin/perl
+# 
+# Rationale: script for retrieving analyst opinion from yahoo
+#
 use strict;
-my $csvfiledir = "csv";
+my $outdir = "../opinion";
 my $tickerfile = "tickers.txt";
+
+# --------------------------------------------------------------------------------------------------------------------------
+#
 use threads;
 use Thread::Queue;
+use File::Path;
+mkpath($outdir) unless (-d $outdir);
 my @stocklist=(); #qw/^VIX USO GLD EFA IYR TLT DBA DBB LQD FXE FXY SPY/;
 open(DAT, $tickerfile) || die("Could not open file!");
 @stocklist=<DAT>;
@@ -15,10 +23,10 @@ sub worker {
     while( my $work = $Qwork->dequeue ) {
         my $result;
 
-	my $si = -s "opinion/$work.csv";
+	my $si = -s "$outdir/$work.html";
 	if ($si == 0)
 	{
-		system "wget 'http://finance.yahoo.com/q/ud?s=$work' -O opinion/$work.csv" ;
+		system "wget 'http://finance.yahoo.com/q/ud?s=$work' -O $outdir/$work.html" ;
 		$result = "$tid : fetched $work\n";
 	}
 	else
