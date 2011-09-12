@@ -7,7 +7,7 @@
 #
 # create a table with a join of all the relevant regressors
 #
-my $dbname     = "stocks.db";
+my $dbname     = "../sqlitedb/stocks.db";
 use DBI;
 use strict;
 my $db = DBI->connect("dbi:SQLite:$dbname", "", "", {RaiseError => 1, AutoCommit => 1});

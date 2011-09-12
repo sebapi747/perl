@@ -7,7 +7,7 @@
 #
 #
 my $csvfiledir = "../csv";
-my $tickerfile = "tickers.txt";
+my $tickerfile = "shortlist.txt";
 my $dbname     = "stocks.db";
 my $dbdir       = "../sqlitedb";
 
@@ -33,18 +33,27 @@ CREATE TABLE IF NOT EXISTS hist_quotes (
 END
 $db->do($create_table);
 
-open(DAT, $tickerfile) || die("Could not open file $tickerfile !");
-my @stocklist=<DAT>;
-close DAT;
+opendir(DIR, $csvfiledir);
+my @FILES = grep { /\.csv$/ } readdir(DIR);
+closedir(DIR);
+my @stocklist= ();
+foreach (@FILES)
+{
+	if (~ m/(.*)\.csv/)
+	{
+		push(@stocklist, $1);
+	}
+}
 
-foreach my $symbol (@stocklist) {
+my $symbol = "";
+foreach $symbol (@stocklist) {
 	chomp $symbol;
-	print "inserting $symbol... ";
 	my $file = "$csvfiledir/$symbol.csv";
-	if (-s $file == 0) {
-		print "empty or non existant file\n";
+	if (!-e $file  or -s $file == 0) {
+		print "empty or non existant $file\n";
 		next;
 	}
+	print "inserting $symbol... ";
 	open(DAT, $file) || die("Could not open $file !");
 	my @lines=<DAT>;
 	close DAT;
@@ -99,6 +108,7 @@ END
 	}
 	$db->do("COMMIT");
 	print "inserted $lin lines\n";
+	system "rm $file";
 }
 
 
