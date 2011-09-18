@@ -77,7 +77,7 @@ sub extractData
 			$db->do("INSERT OR REPLACE INTO fin_column_name (column_name, original_name, section) values ('$label', '$orig_label', '$sectionName');");
 			my $labeltype = "REAL";
 			$labeltype = "TEXT" if ($sectionName eq "INDICATORS" || $label =~ m/inventory_valuation_method|auditor/);
-			#$db->do("ALTER TABLE financial ADD COLUMN $label $labeltype NULL") if not exists $inserted_columns{$label};
+			$db->do("ALTER TABLE financial ADD COLUMN $label $labeltype NULL") if not exists $inserted_columns{$label};
 			$inserted_columns{$label} = $labeltype;
 			#
 			# year end dates
