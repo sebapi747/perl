@@ -45,7 +45,6 @@ sub deletebadfile
 					push(@dates, $1);
 				}
 				$found = $#dates;
-				break;
 			}
 			$found_lastline=1 if (m/leverage-to-industry/ or m/risk-based capital ratio/);
 		}
