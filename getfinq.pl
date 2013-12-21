@@ -1,14 +1,29 @@
 #!/usr/bin/perl
-my $outdir = "../../d/finqhtml";
-my $input = "exchange.txt";
+my $exchange = shift;
+my $outdir = "../../d/quotes-$exchange";
+my $input = "../../d/tickers-$exchange.csv";
+
 
 # let's rock
 use strict;
 use File::Path;
+use Text::CSV;
 mkpath($outdir) unless (-d $outdir);
-open(DAT, $input) || die("Could not open file!");
-my @stocklist=<DAT>;
-my @years=qw/0 5 10 15 20 25 30 35 40 45 50 55 60 65/;
+
+open my $fh, "<", $input or die "$input: $!";
+my @stocklist=();
+my $csv = Text::CSV->new ({
+binary    => 1, # Allow special character. Always set this
+auto_diag => 1, # Report irregularities immediately
+});
+while (my $row = $csv->getline ($fh)) {
+	push(@stocklist, $row->[0]);
+	print "$row->[0]\n";
+}
+close $fh;
+#@stocklist=("ACOR");
+
+my @years=qw/0 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75/;
 close DAT;
 my %request;
 my @filelist;
@@ -73,15 +88,18 @@ sub worker {
 	my $result;
 
 	my $fullticker=$work;
-	my $ticker=$fullticker;
+	my $ticker=$work;
+	my $exchg=$exchange;
 	$ticker =~ s/.*://;
+	$exchg =~ s/:.*//;
 	for (my $i=0; $i<$#years+1; $i++)
 	{
 		my $f = "$outdir/$ticker-$i.html";
 		deletebadfile($f);
 		next if (-e $f); #skip if we already got a file there
-		my $r ="\"http://asia.advfn.com/p.php?pid=financials\&btn=s_ok\&mode=quarterly_reports\&symbol=$fullticker\&s_ok=OK\&istart_date=$years[$i]\"";
-	
+		#my $r ="\"http://asia.advfn.com/p.php?pid=financials\&btn=s_ok\&mode=quarterly_reports\&symbol=$fullticker\&s_ok=OK\&istart_date=$years[$i]\"";
+		#http://asia.advfn.com/exchanges/NASDAQ/ADBE/financials?btn=istart_date&istart_date=0&mode=quarterly_reports
+		my $r ="\"http://asia.advfn.com/exchanges/$exchg/$ticker/financials?btn=istart_date\&mode=quarterly_reports\&istart_date=$years[$i]\"";
 		my $wgopt = ""; #"-t4 -T10"; # -t4 -T10
 		my $cmd = "wget $wgopt $r -O $f" ;
 		system $cmd;
